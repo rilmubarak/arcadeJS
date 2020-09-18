@@ -1,0 +1,21 @@
+{
+  "name": "snake",
+  "version": "1.0.0",
+  "description": "database leaderboard snake",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --detectOpenHandles --forceExit --runInBand --watchAll --coverage"
+  },
+  "keywords": [],
+  "author": "ArcadeJS",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.5"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "supertest": "^4.0.2"
+  }
+}
