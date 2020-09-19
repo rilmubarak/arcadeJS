@@ -3,53 +3,83 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
-const game_state = {
-    timer: 60, // 60 seconds
+let game_state = {
+    timer: 15, // 60 seconds
     holes: [0, 0, 0, 0, 0, 0]
 };
 const players = {};
-let counter = 0;
+let game_start = false;
+
+function get_object_length(obj) {
+    let length = 0;
+    const keys = Object.keys(obj);
+    keys.forEach(() => {
+        length++;
+    });
+    return length;
+};
+
+function reset_game_state() {
+    return {
+        timer: 15,
+        holes: [0, 0, 0, 0, 0, 0]
+    };
+};
 
 io.on('connection', (socket) => {
     socket.on('new_player', () => {
-        counter++;
         players[socket.id] = {
             score: 0
         };
+        const players_length = get_object_length(players);
+        if (players_length >= 1) { // Game dalam keadaan ready saat player masih hanya 1
+            game_start = true; // Game (dalam keadaan true) akan benar-benar mulai jika player sudah lebih dari 1
+        } // Nanti mungkin akan implementasi async await di masing-masing socket
+        io.emit('current_players', players);
     });
 
-    if (counter === 2) {
-        io.emit('game_start', game_state);
-        socket.on('hit', (id) => {
-            players[id].score++;
-            io.emit('update_score', players);
-        });
-        setInterval(() => {
-            game_state.timer = game_state.timer--;
+    socket.emit('req_id', socket.id);
+
+    socket.on('hit', (id) => {
+        players[id].score = players[id].score + 1;
+        io.emit('score_update', players);
+    });
+    if (game_start) {
+        const game_update = setInterval(() => {
+            game_state.timer = game_state.timer - 1;
             const new_holes = [];
             for (let i = 0; i < 6; i++) {
                 let chance = Math.floor(Math.random() * 6);
                 chance ? new_holes.push(0) : new_holes.push(1);
             };
             game_state.holes = new_holes;
-            io.emit('update_game', game_state);
+
+            if (!game_state.timer) {
+                clearInterval(game_update);
+            }
+            io.emit('game_update', game_state);
         }, 2000);
     }
 
-    io.emit('current_players', players);
-
-    socket.on('reset_game', () => {
-
+    socket.on('game_reset', () => {
+        game_state = reset_game_state();
     });
 
     setInterval(() => {
-        io.emit('constant_test', { game_state, players, counter });
-    }, 2000); // Test Purpose
+        console.log('game >>> ');
+        console.log(game_state, '\r\n');
+        console.log('game start? >>> ');
+        console.log(game_start, '\r\n');
+        console.log('players >>> ');
+        console.log(players);
+    }, 5000); // Watch State
 
     socket.on('disconnect', () => {
-        counter--;
         delete players[socket.id];
-        io.emit('disonnect', { players, counter });
+        game_start = false;
+        if (get_object_length(players) === 0) {
+            game_state = reset_game_state();
+        }
     });
 });
 
