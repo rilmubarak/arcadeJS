@@ -1,10 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {Button, Row, Col} from 'react-bootstrap'
 
 function App() {
-  const [arr,setArr] = useState([0,0,0,0,0,0])
   return (
     <div className="App">
       <header className="App-header">
@@ -21,18 +19,6 @@ function App() {
           Learn React
         </a>
       </header>
-      <body>
-        <Row>
-          {arr.map((val,index) => {
-              return(
-                <Col xs="4">
-                  <Button>Mole-{index+1}</Button>
-                </Col>
-              )
-          })}
-        </Row>
-        
-      </body>
     </div>
   );
 }
