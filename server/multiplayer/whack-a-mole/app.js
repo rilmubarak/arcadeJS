@@ -40,8 +40,10 @@ io.on('connection', (socket) => {
 
     socket.emit('req_id', socket.id);
 
-    socket.on('hit', (id) => {
+    socket.on('hit', ({ id, holes }) => {
         players[id].score = players[id].score + 1;
+        game_state.holes = holes;
+        io.emit('game_update', game_state);
         io.emit('score_update', players);
     });
     if (game_start) {
