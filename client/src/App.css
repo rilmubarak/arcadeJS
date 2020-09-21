@@ -9,6 +9,7 @@
 
 .App-logo {
   height: 50vmin;
+  margin-left: -85px;
 }
 
 @media (prefers-reduced-motion: no-preference) {

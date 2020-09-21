@@ -13,10 +13,14 @@ export default () => {
       content: "input",
       button: {
         text: "Submit",
-        closeModal: false,
+        closeModal: true,
       },
-    });
-    // .then(res => history.push())
+    })
+    .then(res => {
+      if (res) {
+        history.push('/waitingRoom')
+      }
+    })
   };
 
   const seeLeaderboard = (game) => {
@@ -33,8 +37,6 @@ export default () => {
           Search
         </button>
       </form>
-      <h2>LIST GAMES</h2>
-
       <div className="col-8">
         <div className="row no-gutters">
           <div className="col-md-4">
@@ -42,12 +44,13 @@ export default () => {
           </div>
           <div className="col-md-8">
             <div className="card-body pt-0">
-              <p className="card-text">
+              <h3>Snake</h3>
+              <h6 className="card-text">
                 In the game of Snake, the player uses the arrow keys to move a
                 "snake" around the board. As the snake finds food, it eats the
                 food, and thereby grows larger. The game ends when the snake
                 either moves off the screen or moves into itself
-              </p>
+              </h6>
               <div className="row justify-content-around align-center">
                 <Button variant="primary" onClick={playGame}>
                   Play Now
@@ -55,7 +58,6 @@ export default () => {
                 <Button variant="warning" onClick={_ => seeLeaderboard('snake')}>
                   Leaderboard
                 </Button>
-                <p>1 Player</p>
               </div>
             </div>
           </div>
@@ -83,9 +85,6 @@ export default () => {
                 <Button variant="warning" onClick={_ => seeLeaderboard('whackaMole')}>
                   Leaderboard
                 </Button>
-
-                {/* <h6>Rating : 9.4</h6> */}
-                <h6>2 Player</h6>
               </div>
             </div>
           </div>
