@@ -6,7 +6,7 @@ export default () => {
     const history = useHistory()
 
     const backtoGame = () => {
-        history.push('/listGame')
+        history.push('/games')
     }
   return (
     <div className="container">
