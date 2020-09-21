@@ -1,10 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
 .App {
-  text-align: center;
+  /* text-align: center; */
+  background-image: url('./assets/background.svg');
+  min-height: 100vh;
+  background-size: 100vw;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+  height: 50vmin;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -14,7 +18,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: hsl(220, 13%, 18%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -24,15 +28,46 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.Home {
+  /* display: flex; */
+  padding-left: 80px;
+  flex-direction: column;
+  min-height: 100vh;
+  align-items: center;
+  font-family: 'Roboto', sans-serif;
+
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.description {
+  width: 600px;
+}
+
+.listGame {
+  min-height: 100vh;
+  padding-top: 50px;
+  padding-left: 50px;
+}
+
+.card {
+  max-width: 600px
+}
+
+.leaderboard {
+  padding-top: 80px;
+  justify-content: center;
+  text-align: center;
+  min-height: 100vh;
+}
+
+.box {
+  height:fit-content;
+  background-color: #64C6DC;
+  padding: 50px 50px 20px 50px;
+  border-radius: 30px;
+  margin-bottom: 20px;
+}
+
+th {
+  width: 50%;
 }
