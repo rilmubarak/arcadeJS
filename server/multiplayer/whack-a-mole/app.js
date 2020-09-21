@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
         const players_length = get_object_length(players);
         if (players_length >= 1) { // Game dalam keadaan ready saat player masih hanya 1
             game_start = true; // Game (dalam keadaan true) akan benar-benar mulai jika player sudah lebih dari 1
-        } // Nanti mungkin akan implementasi async await di masing-masing socket
+        }
         io.emit('current_players', players);
     });
 
@@ -47,6 +47,7 @@ io.on('connection', (socket) => {
         io.emit('score_update', players);
     });
     if (game_start) {
+        io.emit('game_start');
         const game_update = setInterval(() => {
             game_state.timer = game_state.timer - 1;
             const new_holes = [];
@@ -56,11 +57,12 @@ io.on('connection', (socket) => {
             };
             game_state.holes = new_holes;
 
-            if (!game_state.timer) {
+            if (!game_state.timer || game_state.timer < 0) {
                 clearInterval(game_update);
+                // game_state = reset_game_state();
             }
             io.emit('game_update', game_state);
-        }, 2000);
+        }, 1000);
     }
 
     socket.on('game_reset', () => {
