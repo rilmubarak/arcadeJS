@@ -1,0 +1,1 @@
+start a server: node <Game>/config/start.js
