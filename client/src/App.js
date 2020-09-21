@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import ListGame from './pages/ListGame'
 import Leaderboard from './pages/Leaderboard'
+import WaitingRoom from './pages/WaitingRoom'
+
 import io from 'socket.io-client';
 const socket = io('http://localhost:3000');
 
@@ -54,8 +56,9 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/listGame" component={ListGame} />
+          <Route path="/games" component={ListGame} />
           <Route path="/:game/leaderBoard" component={Leaderboard} />
+          <Route path="/waitingRoom" component={WaitingRoom} />
         </Switch>
       </Router>
     </div>
