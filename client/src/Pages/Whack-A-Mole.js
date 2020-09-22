@@ -1,13 +1,8 @@
 import Phaser from 'phaser'
-import io from 'socket.io-client';
 
 let holes = [];
+// if (window.location)
 
-// const socket = io('http://localhost:3000');
-// socket.emit('new_player');
-// socket.on('req_id', (id) => {
-//   localStorage.setItem('id', id);
-// });
 // socket.on('current_players', (players) => {
 //   console.log(players);
 //   const keys = Object.keys(players);
@@ -28,27 +23,54 @@ let holes = [];
 //   console.log(players) // Terpanggil setiap kali player pukul tikus
 // });
 
-const config = {
-  width: 800,
-  height: 600,
-  type: Phaser.AUTO,
-  backgroundColor: '#008000',
-  scene: {
-    preload: preload,
-    create: create,
-    update: update,
-    clickHandler: clickHandler
-  },
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: { y: 200 }
-    }
-  },
-  pixelArt: true,
-  parent: 'game-container',
-  canvas: document.getElementById('game-container'),
-  autoCenter: Phaser.Scale.Center
+// config biasa
+// const config = {
+//     width: 800,
+//     height: 600,
+//     type: Phaser.AUTO,
+//     backgroundColor: '#008000',
+//     scene: {
+//       preload: preload,
+//       create: create,
+//       update: update,
+//       clickHandler: clickHandler.bind({ scene: this })
+//     },
+//     physics: {
+//       default: 'arcade',
+//       arcade: {
+//         gravity: { y: 200 }
+//       }
+//     },
+//     pixelArt: true,
+//     parent: 'game-container',
+//     canvas: document.getElementById('game-container'),
+//     autoCenter: Phaser.Scale.Center
+// };
+
+// // config rusak
+const config = (socket) => {
+  console.log(socket);
+  return {
+    width: 800,
+    height: 600,
+    type: Phaser.CANVAS,
+    backgroundColor: '#008000',
+    scene: {
+      preload: preload,
+      create: create,
+      update: update,
+      clickHandler: clickHandler.bind({ scene: this, socket })
+    },
+    physics: {
+      default: 'arcade',
+      arcade: {
+        gravity: { y: 200 }
+      }
+    },
+    pixelArt: true,
+    canvas: document.getElementById('game-container'),
+    autoCenter: Phaser.Scale.Center
+  }
 }
 
 // const game = new Phaser.Game(config)
@@ -62,7 +84,7 @@ function preload() {
 
 function create() {
   this.add.image(400, 300, "background")
-  this.add.text(0.5, 0.5, "Hello World")
+  this.add.text(0.5, 0.5, "Hello World", { color: '#000000' })
   const holePos = [[100, 150], [366.67, 150], [633.3367, 150], [100, 450], [366.67, 450], [633.3367, 450]]
 
   for (let i = 0; i < 6; i++) {
@@ -80,7 +102,7 @@ function create() {
     let y = pos[i][1]
     let moleSprite = this.add.sprite(x, y, "mole")
     moleSprite.setVisible(false)
-    // moleSprite.on('clicked', clickHandler, this)
+    // moleSprite.once('clicked', clickHandler.bind(this));
 
     this.moles.push(moleSprite)
   }
@@ -95,16 +117,17 @@ function update() {
   this.info.setText('Score: ' + this.score + '\nTime: ' + Math.floor(10000 - this.timer.getElapsed()));
 }
 function clickHandler() {
-  // socket.emit('hit', ({ id: localStorage.id, holes }));
-  console.log('kilk')
-  this.mole.setVisible(false)
-  this.score += 5
+  // this.socket.emit('hit', ({ id: localStorage.id, holes }));
+  console.log(this)
+  // this.mole.setVisible(false)
+  // this.score += 5
   // this.mole.off('clicked', clickHandler);
-  this.mole.input.enabled = false;
-  this.mole.setVisible(false);
+  // this.mole.input.enabled = false;
+  // this.mole.setVisible(false);
 }
 function showMole() {
   let i = Math.ceil(Math.random() * 5)
+  // eslint-disable-next-line
   this.moles.filter((mole, index) => {
     if (index !== i) {
       mole.setVisible(false)
@@ -114,11 +137,10 @@ function showMole() {
       this.input.on('gameobjectup', function (pointer, gameObject) {
         gameObject.emit('clicked', gameObject);
       }, this);
-      this.mole.on('clicked', clickHandler.bind(this))
+      this.mole.once('clicked', clickHandler.bind(this));
     }
   })
 }
-
 
 // ReactDOM.render(<Test />, document.getElementById("root"));
 
