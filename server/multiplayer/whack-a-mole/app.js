@@ -4,7 +4,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 let game_state = {
-    timer: 100, // 60 seconds
+    timer: 60, // 60 seconds
     holes: [0, 0, 0, 0, 0, 0]
 };
 const players = {};
@@ -21,7 +21,7 @@ function get_object_length(obj) {
 
 function reset_game_state() {
     return {
-        timer: 100,
+        timer: 60,
         holes: [0, 0, 0, 0, 0, 0]
     };
 };
@@ -31,11 +31,33 @@ io.on('connection', (socket) => {
         players[socket.id] = {
             score: 0
         };
-        const players_length = get_object_length(players);
-        if (players_length >= 1) { // Game dalam keadaan ready saat player masih hanya 1
-            game_start = true; // Game (dalam keadaan true) akan benar-benar mulai jika player sudah lebih dari 1
-        }
         io.emit('current_players', players);
+    });
+
+    const players_length = get_object_length(players);
+    if (players_length >= 1) { // Game dalam keadaan ready saat player masih hanya 1
+        game_start = true; // Game (dalam keadaan true) akan benar-benar mulai jika player sudah lebih dari 1
+    }
+
+    socket.on('force_start', () => {
+        io.emit('game_start');
+        const game_update = setInterval(() => {
+            game_state.timer = game_state.timer - 1;
+            const new_holes = [];
+            for (let i = 0; i < 6; i++) {
+                let chance = Math.floor(Math.random() * 6);
+                chance ? new_holes.push(0) : new_holes.push(1);
+            };
+            game_state.holes = new_holes;
+
+            if (!game_state.timer || game_state.timer < 0) {
+                clearInterval(game_update);
+                io.emit('sp_score_final', { players });
+                io.emit('game_finish');
+                game_state = reset_game_state();
+            }
+            io.emit('game_update', game_state);
+        }, 1000);
     });
 
     socket.emit('req_id', socket.id);
@@ -44,7 +66,7 @@ io.on('connection', (socket) => {
         players[id].score = players[id].score + 1;
         game_state.holes = holes;
         io.emit('game_update', game_state);
-        io.emit('score_update', players);
+        io.emit('score_update', players); // <<< Realtime Update
     });
     if (game_start) {
         io.emit('game_start');
@@ -59,7 +81,9 @@ io.on('connection', (socket) => {
 
             if (!game_state.timer || game_state.timer < 0) {
                 clearInterval(game_update);
-                // game_state = reset_game_state();
+                io.emit('score_final', { players });
+                io.emit('game_finish');
+                game_state = reset_game_state();
             }
             io.emit('game_update', game_state);
         }, 1000);
@@ -89,4 +113,4 @@ setInterval(() => {
     console.log(game_start, '\r\n');
     console.log('players >>> ');
     console.log(players);
-}, 500); // Watch State
+}, 1000); // Watch State

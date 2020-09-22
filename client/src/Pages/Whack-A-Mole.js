@@ -1,52 +1,4 @@
-import React, {ReactDOM, useEffect} from 'react'
-import Phaser from 'phaser'
-
-let holes = [];
-// if (window.location)
-
-// socket.on('current_players', (players) => {
-//   console.log(players);
-//   const keys = Object.keys(players);
-//   for (let i = 0; i < keys.length; i++) {
-//     // if (keys[i] === playerID) {
-//     //   setScores({ ...scores, player: players[keys[i]].score });
-//     // } else {
-//     //   setScores({ ...scores, enemy: players[keys[i]].score });
-//     // }
-//   }
-// });
-// socket.on('game_update', (game_state) => {
-//   console.log(game_state); // Dijalankan selama interval "1 detik"
-  // setTimer(game_state.timer);
-  // setHoles(game_state.holes);
-// });
-// socket.on('score_update', (players) => {
-//   console.log(players) // Terpanggil setiap kali player pukul tikus
-// });
-
-// config biasa
-// const config = {
-//     width: 800,
-//     height: 600,
-//     type: Phaser.AUTO,
-//     backgroundColor: '#008000',
-//     scene: {
-//       preload: preload,
-//       create: create,
-//       update: update,
-//       clickHandler: clickHandler.bind({ scene: this })
-//     },
-//     physics: {
-//       default: 'arcade',
-//       arcade: {
-//         gravity: { y: 200 }
-//       }
-//     },
-//     pixelArt: true,
-//     parent: 'game-container',
-//     canvas: document.getElementById('game-container'),
-//     autoCenter: Phaser.Scale.Center
-// };
+import Phaser from 'phaser';
 
 const config = (socket) => {
   return {
@@ -73,8 +25,6 @@ const config = (socket) => {
   }
 }
 
-// const game = new Phaser.Game(config)
-
 function preload() {
   this.load.image({ key: "background", url: require("../assets/WhackAMole/bg_1.png") })
   this.load.image("hole", require("../assets/WhackAMole/hole.png"), {})
@@ -84,11 +34,10 @@ function preload() {
 
 
 function create(a) {
-  console.log(a, ' <<< Socket', this, '<<< this');
   const scene = this;
   scene.socket = a;
   scene.add.image(400, 300, "background")
-  scene.add.text(0.5, 0.5, "Hello World", { color: '#000000' })
+  scene.add.text(0.5, 0.5, "", { color: '#000000' })
   const holePos = [[100, 150], [366.67, 150], [633.3367, 150], [100, 450], [366.67, 450], [633.3367, 450]]
 
   for (let i = 0; i < 6; i++) {
@@ -127,7 +76,7 @@ function update() {
 function clickHandler(i,molesArr,holes,data) {
   holes[i] = 0
   data.data.list.socket.emit('hit', ({ id: localStorage.id, holes }));
-
+  console.log('click')
   // this.mole.setVisible(false)
   // this.score += 5
   // this.mole.off('clicked', clickHandler);
@@ -135,14 +84,13 @@ function clickHandler(i,molesArr,holes,data) {
   // this.mole.setVisible(false);
 }
 function showMole(molesArr,timer,holes,data) {
-  console.log(data,',,,,,,,,,,')
+  // console.log(data,',,,,,,,,,,')
   // eslint-disable-next-line
     holes.filter((hole,i) => {
       if(hole === 1) {
         molesArr[i].setVisible(true)
         molesArr[i].setInteractive()
         molesArr[i].once('clicked', () => clickHandler(i,molesArr,holes,data));
-
       } else {
         molesArr[i].setVisible(false)
       }
@@ -150,7 +98,5 @@ function showMole(molesArr,timer,holes,data) {
     
  
 }
-
-// ReactDOM.render(<Test />, document.getElementById("root"));
 
 export default config;
