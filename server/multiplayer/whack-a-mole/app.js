@@ -4,7 +4,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 let game_state = {
-    timer: 15, // 60 seconds
+    timer: 10, // 60 seconds
     holes: [0, 0, 0, 0, 0, 0]
 };
 const players = {};
@@ -27,7 +27,9 @@ function reset_game_state() {
 };
 
 io.on('connection', (socket) => {
+    console.log('socket connected')
     socket.on('new_player', () => {
+        console.log('tes')
         players[socket.id] = {
             score: 0
         };
