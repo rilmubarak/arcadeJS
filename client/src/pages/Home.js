@@ -6,8 +6,8 @@ import { useHistory } from 'react-router-dom'
 export default () => {
     const history = useHistory()
 
-    const goListGame = () => {
-        history.push('/listGame')
+    const goGames = () => {
+        history.push('/games')
     }
 
   return (
@@ -21,7 +21,7 @@ export default () => {
           modern look and fully available for anyone to access and enjoy.
         </p>
       </div>
-      <Button variant="primary" size="lg" className="mt-3" onClick={goListGame}>Show Game</Button>
+      <Button variant="primary" size="lg" className="mt-3" onClick={goGames}>Show Game</Button>
     </div>
   );
 };

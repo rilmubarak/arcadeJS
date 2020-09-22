@@ -5,6 +5,8 @@ import Home from './pages/Home'
 import ListGame from './pages/ListGame'
 import Leaderboard from './pages/Leaderboard'
 import Test from './pages/Whack-A-Mole'
+import Snake from './pages/Snake'
+import WaitingRoom from './pages/WaitingRoom'
 
 function App() {
   return (
@@ -12,9 +14,11 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route path="/listGame" component={ListGame} />
+          <Route path="/games" component={ListGame} />
+          <Route exact path="/snake" component={Snake} />
           <Route path="/:game/leaderBoard" component={Leaderboard} />
           <Route path="/test" component={Test} />
+          <Route path="/waitingRoom" component={WaitingRoom} />
         </Switch>
       </Router>
     </div>
