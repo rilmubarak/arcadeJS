@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import ListGame from './pages/ListGame'
 import Leaderboard from './pages/Leaderboard'
-import Test from './pages/Whack-A-Mole'
+import Whack from './pages/WhackContainer';
 import Snake from './pages/Snake'
 import WaitingRoom from './pages/WaitingRoom'
 
@@ -16,9 +16,9 @@ function App() {
           <Route exact path="/" component={Home} />
           <Route path="/games" component={ListGame} />
           <Route exact path="/snake" component={Snake} />
+          <Route exact path="/whack" component={Whack} />
           <Route path="/:game/leaderBoard" component={Leaderboard} />
-          <Route path="/test" component={Test} />
-          <Route path="/waitingRoom" component={WaitingRoom} />
+          <Route exact path="/waitingRoom" component={WaitingRoom} />
         </Switch>
       </Router>
     </div>
