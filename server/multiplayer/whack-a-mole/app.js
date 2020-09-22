@@ -27,9 +27,7 @@ function reset_game_state() {
 };
 
 io.on('connection', (socket) => {
-    console.log('socket connected')
     socket.on('new_player', () => {
-        console.log('tes')
         players[socket.id] = {
             score: 0
         };
@@ -71,15 +69,6 @@ io.on('connection', (socket) => {
         game_state = reset_game_state();
     });
 
-    setInterval(() => {
-        console.log('game >>> ');
-        console.log(game_state, '\r\n');
-        console.log('game start? >>> ');
-        console.log(game_start, '\r\n');
-        console.log('players >>> ');
-        console.log(players);
-    }, 5000); // Watch State
-
     socket.on('disconnect', () => {
         delete players[socket.id];
         game_start = false;
@@ -92,3 +81,12 @@ io.on('connection', (socket) => {
 server.listen(3000, () => {
     console.log('Running on http://localhost:3000');
 });
+
+setInterval(() => {
+    console.log('game >>> ');
+    console.log(game_state, '\r\n');
+    console.log('game start? >>> ');
+    console.log(game_start, '\r\n');
+    console.log('players >>> ');
+    console.log(players);
+}, 500); // Watch State
