@@ -1,5 +1,4 @@
 import React, {ReactDOM, useEffect} from 'react'
-import Test from './test_WAM'
 import Phaser from 'phaser'
 import {IonPhaser} from '@ion-phaser/react'
 import io from 'socket.io-client';
