@@ -4,7 +4,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 let game_state = {
-    timer: 10, // 60 seconds
+    timer: 100, // 60 seconds
     holes: [0, 0, 0, 0, 0, 0]
 };
 const players = {};
@@ -21,7 +21,7 @@ function get_object_length(obj) {
 
 function reset_game_state() {
     return {
-        timer: 15,
+        timer: 100,
         holes: [0, 0, 0, 0, 0, 0]
     };
 };
