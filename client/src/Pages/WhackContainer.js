@@ -20,7 +20,6 @@ export default () => {
         });
         // const config_game = WhackConf;
         const config_game = WhackConf(socket); // config rusak
-        console.log(config_game);
         setGame(Object.assign({}, config_game));
     }, []);
 
@@ -30,7 +29,7 @@ export default () => {
                 <button onClick={e => setInitialize(true)}>TEST PURPOSE</button>
                 <h1>Waiting for other player</h1>
             </>
-        )
+        );
     }
 
     return (

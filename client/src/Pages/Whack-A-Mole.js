@@ -47,9 +47,7 @@ let holes = [];
 //     autoCenter: Phaser.Scale.Center
 // };
 
-// // config rusak
 const config = (socket) => {
-  console.log(socket);
   return {
     width: 800,
     height: 600,
@@ -59,7 +57,7 @@ const config = (socket) => {
       preload: preload,
       create: create,
       update: update,
-      clickHandler: clickHandler.bind({ scene: this, socket })
+      extend: { data: { socket } }
     },
     physics: {
       default: 'arcade',
@@ -67,6 +65,7 @@ const config = (socket) => {
         gravity: { y: 200 }
       }
     },
+    socket: socket,
     pixelArt: true,
     canvas: document.getElementById('game-container'),
     autoCenter: Phaser.Scale.Center
@@ -82,29 +81,32 @@ function preload() {
   this.score = 0
 }
 
-function create() {
-  this.add.image(400, 300, "background")
-  this.add.text(0.5, 0.5, "Hello World", { color: '#000000' })
+function create(a) {
+  console.log(a, ' <<< Socket', this, '<<< this');
+  const scene = this;
+  scene.socket = a;
+  scene.add.image(400, 300, "background")
+  scene.add.text(0.5, 0.5, "Hello World", { color: '#000000' })
   const holePos = [[100, 150], [366.67, 150], [633.3367, 150], [100, 450], [366.67, 450], [633.3367, 450]]
 
   for (let i = 0; i < 6; i++) {
-    var hole1 = this.add.sprite(holePos[i][0], holePos[i][1], "hole")
+    var hole1 = scene.add.sprite(holePos[i][0], holePos[i][1], "hole")
   }
-  this.info = this.add.text(700, 10, '', { font: '20px Arial' });
-  this.timer = this.time.addEvent({ delay: 3000, loop: true, callback: showMole, callbackScope: this })
+  scene.info = scene.add.text(700, 10, '', { font: '20px Arial' });
+  scene.timer = scene.time.addEvent({ delay: 3000, loop: true, callback: showMole, callbackScope: this })
 
-  this.moles = []
+  scene.moles = []
   const pos = [[100, 120], [366.67, 120], [633.3367, 120], [100, 420], [366.67, 420], [633.3367, 420]]
   // socket.on
 
   for (let i = 0; i < 6; i++) {
     let x = pos[i][0]
     let y = pos[i][1]
-    let moleSprite = this.add.sprite(x, y, "mole")
+    let moleSprite = scene.add.sprite(x, y, "mole")
     moleSprite.setVisible(false)
     // moleSprite.once('clicked', clickHandler.bind(this));
 
-    this.moles.push(moleSprite)
+    scene.moles.push(moleSprite)
   }
 
   // var sceneShowBall = showBall.bind(this)
@@ -117,8 +119,9 @@ function update() {
   this.info.setText('Score: ' + this.score + '\nTime: ' + Math.floor(10000 - this.timer.getElapsed()));
 }
 function clickHandler() {
-  // this.socket.emit('hit', ({ id: localStorage.id, holes }));
-  console.log(this)
+  this.data.list.socket.emit('hit', ({ id: localStorage.id, holes }));
+
+  console.log(this.data.list.socket, '<<<<<< click')
   // this.mole.setVisible(false)
   // this.score += 5
   // this.mole.off('clicked', clickHandler);
