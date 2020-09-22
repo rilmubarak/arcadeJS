@@ -1,3 +1,4 @@
+import React, {ReactDOM, useEffect} from 'react'
 import Phaser from 'phaser'
 
 let holes = [];
