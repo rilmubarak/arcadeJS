@@ -6,7 +6,7 @@ export default ({ location }) => {
 
     useEffect(() => {
         // diff => location.data.diff // isinya antara 'easy', 'med', 'hard
-        // username => location.data.username
+        let username = location.data.username
         const canvas = gameCanvas.current
         if (canvas) {
             const ctx = canvas.getContext('2d')
@@ -17,7 +17,7 @@ export default ({ location }) => {
                 snake,
                 foods: [],
             }
-            startGame(game, ctx)
+            startGame(game, ctx, username)
         }
     }, [])
 
@@ -25,6 +25,7 @@ export default ({ location }) => {
         <>
             <div className="wrapper">
                 <p id="score">Score: 0</p>
+                <img src="snake.jpg" style={{display:'none'}} id="snake-img"></img>
                 <canvas ref={gameCanvas} id="map" width="600" height="600"></canvas>
             </div>
         </>
