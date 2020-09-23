@@ -19,6 +19,7 @@
     "react-lottie": "^1.2.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "rfdc": "^1.1.4",
     "socket.io-client": "^2.3.0",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^10.3.1"

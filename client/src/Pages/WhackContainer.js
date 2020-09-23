@@ -72,15 +72,14 @@ export default ({ location }) => {
             }
         });
         socket.on('sp_score_final', ({ players }) => {
-            set_singleplayer_score(players[localStorage.id].score);
+            if (players[localStorage.id] !== undefined) set_singleplayer_score(players[localStorage.id].score);
+            else swal.fire('Jangan pergi cepat cepat', 'Ku tak cukup waktu untuk update', 'info');
         });
 
         const config_game = WhackConf(socket);
         setGame(Object.assign({}, config_game));
         return () => {
             socket.emit('end-session');
-            setInitialize(false);
-            console.log('pindah', socket.emit);
         };
         // eslint-disable-next-line
     }, []);
@@ -113,13 +112,13 @@ export default ({ location }) => {
         // eslint-disable-next-line
     }, [win]);
 
-    useEffect(() => { // Kirim score di sini (pakai gql)
+    useEffect(() => {
         async function exec() {
             if (singleplayer_score) {
                 await add_score({
                     variables: {
                         username,
-                        score: singleplayer_score
+                        score: +singleplayer_score
                     }
                 });
                 
