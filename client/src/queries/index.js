@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const FETCH_SNAKE = gql`
     query get_snake {
         get_snake_leaderboard {
+            _id
             username
             score
         }
@@ -12,6 +13,7 @@ export const FETCH_SNAKE = gql`
 export const FETCH_WHACK = gql`
     query get_whack {
         get_whack_leaderboard {
+            _id
             username
             score
         }
@@ -56,8 +58,8 @@ export const DEFS_PROP = gql`
 // `  
 
 export const POST_SNAKE = gql`
-    mutation post_snake($username: String, $score: Integer) {
-        post_snake(new_leaderboard: {
+    mutation post_snake($username: String, $score: Int) {
+        post_snake_leaderboard(new_leaderboard: {
             username: $username,
             score: $score,
         }) {
@@ -67,10 +69,10 @@ export const POST_SNAKE = gql`
 `;
 
 export const POST_WHACK = gql`
-    mutation post_whack($username: String, $score: Integer) {
-        post_whack(new_leaderboard: {
+    mutation post_whack($username: String, $score: Int) {
+        post_whack_leaderboard(new_leaderboard: {
             username: $username,
-            score: $score,
+            score: $score
         }) {
             _id
         }
