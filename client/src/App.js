@@ -8,7 +8,7 @@ import Whack from './pages/WhackContainer';
 import Snake from './pages/Snake';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 const client = new ApolloClient({
-  uri: '',
+  uri: 'http://18.141.219.182:4003',
   cache: new InMemoryCache(),
 })
 
