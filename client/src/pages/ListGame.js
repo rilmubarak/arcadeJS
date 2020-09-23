@@ -1,13 +1,14 @@
 import React from "react";
 import snakeImg from "../assets/snake-images.svg";
 import WholeaMoleImg from "../assets/whack-a-mole-images.svg";
-import { Button } from "react-bootstrap";
+import { Button, DropdownButton, Dropdown } from "react-bootstrap";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
 
 export default () => {
   const history = useHistory();
-  const playGame = () => {
+
+  const playGameSingle = (game) => {
     swal({
       text: "Input Username",
       content: "input",
@@ -18,10 +19,19 @@ export default () => {
     })
     .then(res => {
       if (res) {
-        history.push('/waitingRoom')
+        if(game === 'snake') {
+          swal('success', game)
+          // history.push('/snakeGame')
+        } else {
+          // history.push('/whackAMoleGame')
+        }
       }
     })
   };
+
+  const playGameMulti = () => {
+    history.push('/waitingRoom')
+  }
 
   const seeLeaderboard = (game) => {
     history.push(`/${game}/leaderboard`)
@@ -31,7 +41,7 @@ export default () => {
     <div className="listGame">
       <form className="form-inline mb-3">
         <div className="form-group mx-sm- mb-2">
-          <input className="form-control" placeholder="Title Game" />
+          <input className="form-control ml-3" placeholder="Title Game" />
         </div>
         <button type="submit" className="btn btn-primary mb-2">
           Search
@@ -51,8 +61,8 @@ export default () => {
                 food, and thereby grows larger. The game ends when the snake
                 either moves off the screen or moves into itself
               </h6>
-              <div className="row justify-content-around align-center">
-                <Button variant="primary" onClick={playGame}>
+              <div className="row  align-center">
+                <Button className="ml-3 mr-3" variant="primary" onClick={_ => playGameSingle('snake')}>
                   Play Now
                 </Button>
                 <Button variant="warning" onClick={_ => seeLeaderboard('snake')}>
@@ -71,17 +81,21 @@ export default () => {
           </div>
           <div className="col-md-8">
             <div className="card-body pt-0">
-              <p className="card-text">
+            <h3>Whack A Mole</h3>
+              <h6 className="card-text">
                 In Japan, モグラ退治 (mogura taiji, "Mole Buster") is a popular
                 arcade game invented in 1975 by Kazuo Yamada of TOGO, based on
                 ten of the designer's pencil sketches from 1974, licensed to
-                Bandai in 1977. It can also be commonly found at Japanese
-                festivals.
-              </p>
-              <div className="row justify-content-around align-center">
-                <Button variant="primary" onClick={playGame}>
+                Bandai in 1977. 
+              </h6>
+              <div className="row align-center">
+                {/* <Button variant="primary" onClick={playGame}>
                   Play Now
-                </Button>
+                </Button> */}
+                <DropdownButton id="dropdown-item-button" title="Play Now" className="ml-3 mr-3">
+                  <Dropdown.Item onClick={_ => playGameSingle('WhackAMole')}>Single</Dropdown.Item>
+                  <Dropdown.Item onClick={playGameMulti}>Multiplayer</Dropdown.Item>
+                </DropdownButton>
                 <Button variant="warning" onClick={_ => seeLeaderboard('whackaMole')}>
                   Leaderboard
                 </Button>

@@ -21,7 +21,7 @@ export default () => {
           modern look and fully available for anyone to access and enjoy.
         </p>
       </div>
-      <Button variant="primary" size="lg" className="mt-3" onClick={goGames}>Show Game</Button>
+      <Button variant="primary" size="lg" className="mt-3 btn-round" onClick={goGames}>Show Game</Button>
     </div>
   );
 };
