@@ -5,6 +5,8 @@ import WhackConf from './Whack-A-Mole';
 import WaitingRoom from './WaitingRoom';
 import swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import { FETCH_WHACK, POST_WHACK } from '../queries';
 
 export default ({ location }) => {
     const history = useHistory();
@@ -16,6 +18,9 @@ export default ({ location }) => {
     const [player_score, set_player_score] = useState(0);
     const [enemy_score, set_enemy_score] = useState(0);
     const [singleplayer_score, set_singleplayer_score] = useState(0);
+    const [add_score] = useMutation(POST_WHACK, {
+        refetchQueries: [{ query: FETCH_WHACK }]
+    });
 
     useEffect(() => {
         const socket = io('http://localhost:3000');
@@ -111,6 +116,13 @@ export default ({ location }) => {
     useEffect(() => { // Kirim score di sini (pakai gql)
         async function exec() {
             if (singleplayer_score) {
+                await add_score({
+                    variables: {
+                        username,
+                        score: singleplayer_score
+                    }
+                });
+                
                 const result = await swal.fire({
                     title: `Congratulations, ${username}!`,
                     text: `Your final score: ${singleplayer_score}`,
