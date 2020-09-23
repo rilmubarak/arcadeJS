@@ -1,3 +1,4 @@
+import swal from 'sweetalert2'
 const degToRad = (angle) => ((angle * Math.PI) / 180)
 
 class Snake {
@@ -12,7 +13,9 @@ class Snake {
 
   draw() {
     this.ctx.beginPath()
-    this.ctx.fillStyle = Snake.COLOR
+    let snakeImg = document.getElementById("snake-img")
+    let pattern = this.ctx.createPattern(snakeImg, 'repeat')
+    this.ctx.fillStyle = pattern
     this.ctx.arc(this.x, this.y, Snake.HEAD_RADIUS, 0, 2 * Math.PI)
     this.ctx.fill()
     this.ctx.closePath()
@@ -146,6 +149,8 @@ const foodGeneration = (foods = [], ctx) => {
   }, 2500)
 }
 
+let score = 0
+
 const findFoodCollision = (foods, snake, ctx) => {
   for (const food of foods) {
     if (
@@ -154,7 +159,8 @@ const findFoodCollision = (foods, snake, ctx) => {
     ) {
       food.destroy(ctx)
     	foods.splice(foods.indexOf(food), 1)
-    	snake.length += 1
+      snake.length += 1
+      score = snake.length - Snake.INITIAL_LENGTH
       changeScore(snake.length - Snake.INITIAL_LENGTH)
     }
   }
@@ -165,9 +171,12 @@ const changeScore = (score) => {
   scoreElem.innerHTML = `Score: ${score}`
 }
 
-export const startGame = (game, ctx) => {
+let player = ''
+
+export const startGame = (game, ctx, username) => {
   const { snake, foods } = game
   foodGeneration(foods, ctx)
+  player = username
 
   const canvasSize = {mapW: 600, mapH: 590}
   game.snakeInterval = setInterval(snake.running.bind(snake), 30, canvasSize, game)
@@ -182,7 +191,13 @@ const finishGame = (game) => {
   clearInterval(snakeInterval)
   clearInterval(foodInterval)
   game.finished = true
-  alert('You lose :(')
+  swal.fire({
+    title: `Congratulations, ${player}!`,
+    text: `Your final score: ${score}`,
+    showDenyButton: true,
+    denyButtonText: 'Home',
+    confirmButtonText: 'Leaderboard'
+  });
 }
 
 export default Snake
