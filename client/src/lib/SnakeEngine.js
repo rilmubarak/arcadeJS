@@ -61,7 +61,7 @@ class Snake {
     if (this.coordinates.length > this.length) {
       const { x, y } = this.coordinates[0]
       this.ctx.beginPath()
-      this.ctx.fillStyle = 'rgba(255,255,255,0)'
+      this.ctx.fillStyle = '#fff'
       this.ctx.arc(x, y, Snake.HEAD_RADIUS + 2, 0, 2 * Math.PI)
       this.ctx.fill()
       this.ctx.closePath()
@@ -88,7 +88,7 @@ class Snake {
   }
 }
 
-Snake.COLOR = '#1e90ff'
+Snake.COLOR = '#64C6DC'
 Snake.INITIAL_LENGTH = 100
 Snake.HEAD_RADIUS = 6
 Snake.SPEED = 2
@@ -126,13 +126,24 @@ const maxAmountOfFood = 100
 const foodGeneration = (foods = [], ctx) => {
   let diff = maxAmountOfFood - foods.length
   while (diff > 0) {
-    const x = (Math.random() * 500) >> 0
-    const y = (Math.random() * 500) >> 0
+    const x = (Math.random() * 600) >> 0
+    const y = (Math.random() * 600) >> 0
     const color = '#'+((1 << 24) * Math.random()|0).toString(16)
     const food = new Food(x, y, color, ctx)
     foods.push(food)
     diff--
   }
+  setInterval(() => {
+    let diff = Math.floor(Math.random() * 6)
+    while (diff > 0) {
+    const x = (Math.random() * 600) >> 0
+    const y = (Math.random() * 600) >> 0
+    const color = '#'+((1 << 24) * Math.random()|0).toString(16)
+    const food = new Food(x, y, color, ctx)
+    foods.push(food)
+    diff--
+  }
+  }, 2500)
 }
 
 const findFoodCollision = (foods, snake, ctx) => {
