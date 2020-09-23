@@ -1,58 +1,72 @@
 const axios = require("axios")
 const { gql } = require("apollo-server");
-// const Redis = require('ioredis')
-// const redis = new Redis()
+const redis = require('../config/redis');
+
+const url = 'http://18.141.219.182:3002/whack';
 
 const typeDefs = gql`
-  
-  type Leaderboard {
-    _id: ID,
+  type mole_leaderboard {
+    _id: ID
     username: String
-    score: Float
+    score: Int
   }
 
-  input InputLeaderBoard {
+  type response_mole {
+    message: String!
+  }
+
+  input input_mole_leaderboard {
     username: String
-    score: Float,
+    score: Int
   }
 
   extend type Query {
-    getLeaderboard: [Leaderboard],
-    
+    get_whack_leaderboard: [mole_leaderboard]
+    clear_whack_cache: response_mole
   }
 
   extend type Mutation {
-      postLeaderboard(newLeaderboard: InputLeaderboard): Leaderboard,
-      delLeaderboard(_id: ID): Leaderboard,
+    post_whack_leaderboard(new_leaderboard: input_mole_leaderboard): mole_leaderboard
   }
-
 `;
-const url = '' //http://localhost:3002/whack-a-mole
+
 const resolvers = {
-    Query: {
-        getLeaderboard: async () => {
-          //redis? 
-            const {data} = await axios.get(`${url}/leaderboard`)
-            return data
-          
-            
+  Query: {
+    get_whack_leaderboard: async () => {
+      try {
+        const leaderboard = await redis.get('whack');
+        if (leaderboard) {
+          return JSON.parse(leaderboard);
+        } else {
+          const { data } = await axios.get(`${url}/leaderboard`)
+          redis.set('whack', JSON.stringify(data));
+          return data
         }
+      } catch (error) {
+        console.log(error);
+      }
     },
-    Mutation: {
-        postLeaderboard: async (parents,args, context, info) => {
-            const {newLeaderboard} = args
-            const {data} = await axios.post(`${url}/leaderboard`, newLeaderboard)  
-            //delete cache if used 
-            return data        
-        },
-//------------------------------------------------------------------------------
-        // delLeaderboard: async (parents,args, context, info) => {
-        //     const {_id} = args
-        //     const {data} = await axios.delete(`${url}/leaderboard/${_id}`)
-        //     return data
-        // }
+    clear_whack_cache: async () => {
+      try {
+        await redis.del('whack');
+        return { message: 'OK' };
+      } catch (error) {
+        console.log(error);
+      }
     }
-}
+  },
+  Mutation: {
+    post_whack_leaderboard: async (_, args) => {
+      try {
+        const { new_leaderboard } = args;
+        const { data } = await axios.post(`${url}/leaderboard`, new_leaderboard);
+        redis.del('whack');
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+};
 
-
-module.exports = {typeDefs, resolvers}
+module.exports = { typeDefs, resolvers }
