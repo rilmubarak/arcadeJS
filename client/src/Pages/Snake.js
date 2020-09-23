@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import SnakeEngine, {startGame} from '../lib/SnakeEngine';
 
-// console.log('ini snake>>>', Snake);
-
 export default () => {
 
     const gameCanvas = useRef()
 
     useEffect(() => {
-        console.log('ini>>', gameCanvas);
         const canvas = gameCanvas.current
         if (canvas) {
             const ctx = canvas.getContext('2d')
@@ -19,7 +16,6 @@ export default () => {
                 snake,
                 foods: [],
             }
-            
             startGame(game, ctx)
         }
     }, [])
@@ -28,7 +24,7 @@ export default () => {
         <>
             <div class="wrapper">
                 <p id="score">Score: 0</p>
-                <canvas ref={gameCanvas} id="map" width="600" height="590"></canvas>
+                <canvas ref={gameCanvas} id="map" width="600" height="600"></canvas>
             </div>
         </>
     )
