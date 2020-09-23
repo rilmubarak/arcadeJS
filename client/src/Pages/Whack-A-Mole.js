@@ -24,7 +24,7 @@ const config = (socket) => {
     autoCenter: Phaser.Scale.Center
   }
 }
-var timer = 60;
+// var timer = 60;
 var score = 0
 
 function preload() {
@@ -45,10 +45,10 @@ function create(a) {
     var hole1 = scene.add.sprite(holePos[i][0], holePos[i][1], "hole")
   }
   scene.info = scene.add.text(700, 10, '', { font: '20px Arial' });
-  this.timer = this.time.addEvent({ delay: 60000, loop: true, callback: this, callbackScope: this })
+  // this.timer = this.time.addEvent({ delay: 60000, loop: true, callback: this, callbackScope: this })
   scene.moles = []
   const pos = [[100, 120], [366.67, 120], [633.3367, 120], [100, 420], [366.67, 420], [633.3367, 420]]
-  this.timer = timer
+  // this.timer = timer
   // socket.on
   // for (let i = 0; i < 6; i++) {
   //   let x = pos[i][0]
@@ -62,8 +62,10 @@ function create(a) {
   this.input.on('gameobjectup', function (pointer, gameObject) {
     gameObject.emit('clicked', gameObject);
   }, this);
-  this.data.list.socket.on('game_update', ({ timer, holes }) =>{
-    this.timer--
+  this.data.list.socket.on('game_update', ({ timer, holes }) => {
+    console.log(timer,'<<<<<<<<<<<')
+    this.timer = timer
+    console.log(this.timer,'///')
     scene.moles.map((mole,index) => {
       if(mole !== '' ){
         mole.destroy()
