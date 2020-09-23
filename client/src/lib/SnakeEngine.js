@@ -1,3 +1,6 @@
+import swal from 'sweetalert2'
+import React from 'react'
+
 const degToRad = (angle) => ((angle * Math.PI) / 180)
 
 class Snake {
@@ -146,6 +149,8 @@ const foodGeneration = (foods = [], ctx) => {
   }, 2500)
 }
 
+let score = 0
+
 const findFoodCollision = (foods, snake, ctx) => {
   for (const food of foods) {
     if (
@@ -154,20 +159,25 @@ const findFoodCollision = (foods, snake, ctx) => {
     ) {
       food.destroy(ctx)
     	foods.splice(foods.indexOf(food), 1)
-    	snake.length += 1
+      snake.length += 1
+      score = snake.length - Snake.INITIAL_LENGTH
       changeScore(snake.length - Snake.INITIAL_LENGTH)
     }
   }
 }
+
 
 const changeScore = (score) => {
   const scoreElem = document.getElementById('score')
   scoreElem.innerHTML = `Score: ${score}`
 }
 
-export const startGame = (game, ctx) => {
+let player = ''
+
+export const startGame = (game, ctx, username) => {
   const { snake, foods } = game
   foodGeneration(foods, ctx)
+  player = username
 
   const canvasSize = {mapW: 600, mapH: 590}
   game.snakeInterval = setInterval(snake.running.bind(snake), 30, canvasSize, game)
@@ -176,13 +186,31 @@ export const startGame = (game, ctx) => {
   window.addEventListener('keydown', snake.directionControl.bind(snake))
 }
 
-const finishGame = (game) => {
-  if(game.finished) return
+export let route = 'Home'
+
+export const finishGame = (game) => {
+  // if(game.finished) return
   const { snake, snakeInterval, foodInterval } = game
   clearInterval(snakeInterval)
   clearInterval(foodInterval)
   game.finished = true
-  alert('You lose :(')
+  swal.fire({
+    title: `Congratulations, ${player}!`,
+    text: `Your final score: ${score}`,
+    // showDenyButton: true,
+    // denyButtonText: 'Home',
+    // confirmButtonText: 'Leaderboard'
+  })
+  // .then(result => {
+  //   if (result.isConfirmed) {
+  //     route = 'leaderboard'
+  //     // return toRoute = 'Home'
+  //     // console.log('ke leaderboard')
+  //   } else if (result.isDenied) {
+  //     return 'home'
+  //     // console.log('ke home')
+  //   }
+  // })
 }
 
 export default Snake

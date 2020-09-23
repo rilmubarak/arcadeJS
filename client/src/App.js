@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import ListGame from './pages/ListGame'
 import Leaderboard from './pages/Leaderboard'
-import Whack from './pages/WhackContainer';
-import Snake from './pages/Snake';
+import Whack from './Pages/WhackContainer';
+import Snake from './Pages/Snake';
 
 function App() {
   return (

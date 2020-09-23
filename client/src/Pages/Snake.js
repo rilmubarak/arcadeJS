@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import SnakeEngine, {startGame} from '../lib/SnakeEngine';
+import React, { useEffect, useRef } from 'react';
+import SnakeEngine, { startGame } from '../lib/SnakeEngine';
+import { useHistory } from 'react-router-dom'
 
 export default ({ location }) => {
+    const history = useHistory()
     const gameCanvas = useRef()
+    let toRoute = ''
 
     useEffect(() => {
         // diff => location.data.diff // isinya antara 'easy', 'med', 'hard
-        // username => location.data.username
+        let username = location.data.username
         const canvas = gameCanvas.current
         if (canvas) {
             const ctx = canvas.getContext('2d')
@@ -17,14 +20,20 @@ export default ({ location }) => {
                 snake,
                 foods: [],
             }
-            startGame(game, ctx)
+            startGame(game, ctx, username)
+            // toRoute = route
         }
     }, [])
 
+    useEffect(() => {
+        // history.push('/snake/leaderboard')
+        console.log(toRoute, '<<<<<<<')
+    }, [toRoute])
+    
     return (
         <>
             <div className="wrapper">
-                <p id="score">Score: 0</p>
+                <p id="score" className="mt-5 mb-5">Score: 0</p>
                 <canvas ref={gameCanvas} id="map" width="600" height="600"></canvas>
             </div>
         </>
