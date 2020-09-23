@@ -7,7 +7,7 @@ let game_state = {
     timer: 60, // 60 seconds
     holes: [0, 0, 0, 0, 0, 0]
 };
-const players = {};
+let players = {};
 let game_start = false;
 
 function get_object_length(obj) {
@@ -84,6 +84,7 @@ io.on('connection', (socket) => {
                 io.emit('score_final', { players });
                 io.emit('game_finish');
                 game_state = reset_game_state();
+                players = {};
             }
             io.emit('game_update', game_state);
         }, 1000);

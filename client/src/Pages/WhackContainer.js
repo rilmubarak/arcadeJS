@@ -3,28 +3,40 @@ import { IonPhaser } from '@ion-phaser/react';
 import io from 'socket.io-client';
 import WhackConf from './Whack-A-Mole';
 import WaitingRoom from './WaitingRoom';
-import swal from 'sweetalert';
+import swal from 'sweetalert2';
+import { useHistory } from 'react-router-dom';
 
-function get_object_length(obj) {
-    let length = 0;
-    const keys = Object.keys(obj);
-    keys.forEach(() => {
-        length++;
-    });
-    return length;
-};
-
-export default () => {
+export default ({ location }) => {
+    const history = useHistory();
+    const [username, set_username] = useState('');
     const [game, setGame] = useState();
     const [initialize, setInitialize] = useState(false);
     const [waiting, set_waiting] = useState(true);
+    const [win, set_win] = useState(-1);
+    const [player_score, set_player_score] = useState(0);
+    const [enemy_score, set_enemy_score] = useState(0);
+    const [singleplayer_score, set_singleplayer_score] = useState(0);
 
     useEffect(() => {
         const socket = io('http://localhost:3000');
+
+        if (location.data) {
+            const { username, mode } = location.data;
+            if (mode === 'singleplayer') {
+                if (username.length) {
+                    set_username(username);
+                    socket.emit('force_start');
+                } else {
+                    history.push({
+                        pathname: '/games'
+                    });
+                }
+            }
+        }
+
         socket.emit('new_player');
         socket.on('req_id', (id) => {
             localStorage.setItem('id', id);
-            console.log(id)
         });
         socket.on('game_start', () => {
             set_waiting(false);
@@ -34,43 +46,87 @@ export default () => {
             setInitialize(false);
         });
         socket.on('score_final', ({ players }) => {
-            let player_score, enemy_score;
+            let compare_player, compare_enemy;
             for (const id in players) {
                 if (id === localStorage.id) {
-                    player_score = players[id].score;
+                    compare_player = players[id].score;
                 } else {
-                    enemy_score = players[id].score;
+                    compare_enemy = players[id].score;
                 }
             }
 
-            if (player_score === enemy_score) {
-                swal({
-                    title: `It's a tie!`,
-                    text: `Final score: ${player_score}`
-                });
-            } else if (player_score > enemy_score) {
-                swal({
-                    title: `Victory`,
-                    text: `Your score: ${player_score} \r\n Enemy: ${enemy_score}`
-                });
+            set_player_score(compare_player);
+            set_enemy_score(compare_enemy);
+
+            if (compare_player === compare_enemy) {
+                set_win(0);
+            } else if (compare_player > compare_enemy) {
+                set_win(true);
             } else {
-                swal({
-                    title: `Defeat`,
-                    text: `Your score: ${player_score} \r\n Enemy: ${enemy_score}`
-                });
+                set_win(false);
             }
         });
         socket.on('sp_score_final', ({ players }) => {
-            //players[localStorage.id].score // kirim ke leaderboard
+            set_singleplayer_score(players[localStorage.id].score);
         });
 
         const config_game = WhackConf(socket);
         setGame(Object.assign({}, config_game));
-
         return () => {
+            setInitialize(false);
             socket.emit('disconnect');
         };
+        // eslint-disable-next-line
     }, []);
+
+    useEffect(() => {
+        async function exec() {
+            if (win !== -1) {
+                if (win === true) {
+                    await swal.fire({
+                        title: `Victory`,
+                        html: `Your score: ${player_score} <br> Enemy: ${enemy_score}`
+                    });
+                    history.push('/games');
+                } else if (win === false) {
+                    await swal.fire({
+                        title: `Defeat`,
+                        html: `Your score: ${player_score} <br> Enemy: ${enemy_score}`
+                    });
+                    history.push('/games');
+                } else {
+                    await swal.fire({
+                        title: `It's a tie!`,
+                        text: `Final score: ${player_score}`
+                    });
+                    history.push('/games');
+                }
+            }
+        }
+        exec();
+        // eslint-disable-next-line
+    }, [win]);
+
+    useEffect(() => { // Kirim score di sini (pakai gql)
+        async function exec() {
+            if (singleplayer_score) {
+                const result = await swal.fire({
+                    title: `Congratulations, ${username}!`,
+                    text: `Your final score: ${singleplayer_score}`,
+                    showDenyButton: true,
+                    denyButtonText: 'Home',
+                    confirmButtonText: 'Leaderboard'
+                });
+                if (result.isConfirmed) {
+                    history.push('/whack/leaderboard');
+                } else if (result.isDenied || result.isDismissed) {
+                    history.push('/games');
+                }
+            }
+        }
+        exec();
+        // eslint-disable-next-line
+    }, [singleplayer_score])
 
     if (waiting) {
         return (
