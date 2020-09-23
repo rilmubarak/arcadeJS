@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+/* @import '~@sweetalert2/theme-borderless/borderless.scss'; */
 
 .App {
   /* text-align: center; */
@@ -66,10 +67,36 @@
   padding: 50px 50px 20px 50px;
   border-radius: 30px;
   margin-bottom: 20px;
+  box-shadow: 9px 9px 16px rgba(58, 96, 153, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
 }
 
 th {
   width: 50%;
+}
+
+.waiting {
+  text-align: center;
+  min-height: 100vh;
+}
+
+.rules {
+  width: 400px;
+  height: 400px;
+  padding-top: 100px;
+
+}
+
+.neumorphism {
+  box-shadow: 9px 9px 16px rgba(58, 96, 153, 0.6), -9px -9px 16px rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 30px;
+  border-radius: 30px;
+  position: relative;
+  background-color: #64C6DC;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 /* Snake */
