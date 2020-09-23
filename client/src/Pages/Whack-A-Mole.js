@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 
+var audio = new Audio(require("../assets/WhackAMole/whack_a_mole_audio.mp3"))
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
 const config = (socket) => {
   return {
     width: 800,
@@ -21,7 +24,12 @@ const config = (socket) => {
     socket: socket,
     pixelArt: true,
     canvas: document.getElementById('game-container'),
-    autoCenter: Phaser.Scale.Center
+    autoCenter: Phaser.Scale.Center,
+    audio: {
+      disableWebAudio: false,
+      context: audio.webkitMatchesSelector(true)
+    }
+
   }
 }
 // var timer = 60;
@@ -34,10 +42,15 @@ function preload() {
   this.load.image("mole", require("../assets/WhackAMole/diglett 1.svg"), {})
   this.load.image("dead_mole",require("../assets/WhackAMole/diglett_down 1.svg"))
   this.load.image("hammer",require("../assets/WhackAMole/big_hammer.svg"))
+
+  this.load.audio({key: "theme", url: [require("../assets/WhackAMole/whack_a_mole_audio.mp3"),require("../assets/WhackAMole/whack_a_mole_audio.ogg")]});
   this.score = score
 }
 
 function create(a) {
+  var music = this.sound.add("theme");
+  music.play({loop: true, seek: 2.550});
+
   const scene = this;
   scene.socket = a;
   scene.add.image(400, 300, "background")
@@ -67,35 +80,6 @@ function create(a) {
   })
   sprite = this.add.sprite( 400,300,'hammer')
   this.input.setDefaultCursor('none, pointer');
-  // scene.physics.enable(sprite, Phaser.Physics.ARCADE)
-
-//   this.input.on('pointerdown', function (pointer) {
-
-//     this.input.mouse.requestPointerLock();
-
-// }, this);
-
-// When locked, you will have to use the movementX and movementY properties of the pointer
-// (since a locked cursor's xy position does not update)
-// this.input.on('pointermove', function (pointer) {
-
-//     if (this.input.mouse.locked)
-//     {
-//         sprite.x += pointer.movementX;
-//         sprite.y += pointer.movementY;
-
-
-//         // Force the sprite to stay on screen
-//         sprite.x = Phaser.Math.Wrap(sprite.x, 0, game.renderer.width);
-//         sprite.y = Phaser.Math.Wrap(sprite.y, 0, game.renderer.height);
-
-//         if (pointer.movementX > 0) { sprite.setRotation(0.1); }
-//         else if (pointer.movementX < 0) { sprite.setRotation(-0.1); }
-//         else { sprite.setRotation(1.5); }
-
-//     }
-// }, this);
-
 }
 function message() {
   console.log('seelsai')
