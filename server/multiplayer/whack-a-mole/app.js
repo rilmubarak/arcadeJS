@@ -19,9 +19,9 @@ function get_object_length(obj) {
     return length;
 };
 
-function reset_game_state() {
+function reset_game_state(val) {
     return {
-        timer: 60,
+        timer: val,
         holes: [0, 0, 0, 0, 0, 0]
     };
 };
@@ -35,11 +35,12 @@ io.on('connection', (socket) => {
     });
 
     const players_length = get_object_length(players);
-    if (players_length >= 1) { // Game dalam keadaan ready saat player masih hanya 1
-        game_start = true; // Game (dalam keadaan true) akan benar-benar mulai jika player sudah lebih dari 1
+    if (players_length >= 1) {
+        game_start = true;
     }
 
     socket.on('force_start', () => {
+        game_state = reset_game_state(60);
         io.emit('game_start');
         const game_update = setInterval(() => {
             game_state.timer = game_state.timer - 1;
@@ -54,7 +55,7 @@ io.on('connection', (socket) => {
                 clearInterval(game_update);
                 io.emit('sp_score_final', { players });
                 io.emit('game_finish');
-                game_state = reset_game_state();
+                game_state = reset_game_state(60);
             }
             io.emit('game_update', game_state);
         }, 1000);
@@ -85,7 +86,7 @@ io.on('connection', (socket) => {
                 clearInterval(game_update);
                 io.emit('score_final', { players });
                 io.emit('game_finish');
-                game_state = reset_game_state();
+                game_state = reset_game_state(60);
                 players = {};
             }
             io.emit('game_update', game_state);
@@ -93,14 +94,16 @@ io.on('connection', (socket) => {
     }
 
     socket.on('game_reset', () => {
-        game_state = reset_game_state();
+        game_state = reset_game_state(0);
     });
-
+    if (get_object_length(players) === 0) {
+        game_state = reset_game_state(60);
+    }
     socket.on('end-session', () => {
         delete players[socket.id];
         game_start = false;
         if (get_object_length(players) === 0) {
-            game_state = reset_game_state();
+            game_state = reset_game_state(0);
         }
     });
 });
