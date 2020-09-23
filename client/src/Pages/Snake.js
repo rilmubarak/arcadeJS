@@ -1,7 +1,9 @@
+import { useQuery } from '@apollo/client';
 import React, { useState, useEffect, useRef } from 'react';
 import SnakeEngine, {startGame} from '../lib/SnakeEngine';
 
 export default ({ location }) => {
+    // const {loading, error, data} = useQuery()
     const gameCanvas = useRef()
 
     useEffect(() => {
@@ -21,9 +23,13 @@ export default ({ location }) => {
         }
     }, [])
 
+    // if (loading) return (<>loading..</>)
+    // if (error) return (<>Error</>)
+
     return (
         <>
             <div className="wrapper">
+                <p></p>
                 <p id="score">Score: 0</p>
                 <img src="snake.jpg" style={{display:'none'}} id="snake-img"></img>
                 <canvas ref={gameCanvas} id="map" width="600" height="600"></canvas>
