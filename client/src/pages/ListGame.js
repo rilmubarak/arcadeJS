@@ -2,35 +2,69 @@ import React from "react";
 import snakeImg from "../assets/snake-images.svg";
 import WholeaMoleImg from "../assets/whack-a-mole-images.svg";
 import { Button, DropdownButton, Dropdown } from "react-bootstrap";
-import swal from "sweetalert";
+import swal from "sweetalert2"; // Sweetalert2 aja ya
 import { useHistory } from "react-router-dom";
 
 export default () => {
   const history = useHistory();
 
-  const playGameSingle = (game) => {
-    swal({
-      text: "Input Username",
-      content: "input",
-      button: {
-        text: "Submit",
-        closeModal: true,
-      },
-    })
-    .then(res => {
-      if (res) {
-        if(game === 'snake') {
-          swal('success', game)
-          // history.push('/snakeGame')
-        } else {
-          // history.push('/whackAMoleGame')
+  const playGameSingle = async (game, diff) => {
+    // console.log(game, diff)
+    try {
+      const result = await swal.fire({
+        title: "Input Username",
+        input: 'text',
+      });
+
+      if (result.isConfirmed) {
+        const username = result.value;
+
+        switch (game) {
+          case 'snake':
+            history.push({
+              pathname: '/snake',
+              data: { username, diff }
+            });
+            break;
+        
+          case 'whack':
+            history.push({
+              pathname: '/whack',
+              data: { username, mode: 'singleplayer' }
+            });
+            break;
+
+          default:
+            swal.fire('Error', 'Game not found', 'error');
         }
       }
-    })
+    } catch (error) {
+      console.log(error);
+    }
+
+    // .then(res => {
+    //   console.log(res)
+    // if (res) {
+    //   if (game === 'snake') {
+    //     // swal('success', game)
+    //     history.push({
+    //       pathname: '/snake',
+    //       data: { username: res, game, diff}
+    //     })
+    //   } else {
+    //     // history.push('/whackAMoleGame')
+    //   }
+    // } else {
+    //   swal('Invalid username', '', 'error')
+    // }
+    // })
   };
 
   const playGameMulti = () => {
-    history.push('/waitingRoom')
+    history.push({
+      pathname: '/whack',
+      mode: 'multiplayer'
+    });
   }
 
   const seeLeaderboard = (game) => {
@@ -62,9 +96,14 @@ export default () => {
                 either moves off the screen or moves into itself
               </h6>
               <div className="row  align-center">
-                <Button className="ml-3 mr-3" variant="primary" onClick={_ => playGameSingle('snake')}>
+                {/* <Button className="ml-3 mr-3" variant="primary" onClick={_ => playGameSingle('snake')}>
                   Play Now
-                </Button>
+                </Button> */}
+                <DropdownButton id="dropdown-item-button" title="Play Now" className="ml-3 mr-3">
+                  <Dropdown.Item onClick={_ => playGameSingle('snake', 'easy')}>Easy</Dropdown.Item>
+                  <Dropdown.Item onClick={_ => playGameSingle('snake', 'med')}>Medium</Dropdown.Item>
+                  <Dropdown.Item onClick={_ => playGameSingle('snake', 'hard')}>Hard</Dropdown.Item>
+                </DropdownButton>
                 <Button variant="warning" onClick={_ => seeLeaderboard('snake')}>
                   Leaderboard
                 </Button>
@@ -81,22 +120,22 @@ export default () => {
           </div>
           <div className="col-md-8">
             <div className="card-body pt-0">
-            <h3>Whack A Mole</h3>
+              <h3>Whack A Mole</h3>
               <h6 className="card-text">
                 In Japan, モグラ退治 (mogura taiji, "Mole Buster") is a popular
                 arcade game invented in 1975 by Kazuo Yamada of TOGO, based on
                 ten of the designer's pencil sketches from 1974, licensed to
-                Bandai in 1977. 
+                Bandai in 1977.
               </h6>
               <div className="row align-center">
                 {/* <Button variant="primary" onClick={playGame}>
                   Play Now
                 </Button> */}
                 <DropdownButton id="dropdown-item-button" title="Play Now" className="ml-3 mr-3">
-                  <Dropdown.Item onClick={_ => playGameSingle('WhackAMole')}>Single</Dropdown.Item>
-                  <Dropdown.Item onClick={playGameMulti}>Multiplayer</Dropdown.Item>
+                  <Dropdown.Item onClick={_ => playGameSingle('whack')}>Singleplayer</Dropdown.Item>
+                  <Dropdown.Item onClick={_ => playGameMulti()}>Multiplayer</Dropdown.Item>
                 </DropdownButton>
-                <Button variant="warning" onClick={_ => seeLeaderboard('whackaMole')}>
+                <Button variant="warning" onClick={_ => seeLeaderboard('whack')}>
                   Leaderboard
                 </Button>
               </div>

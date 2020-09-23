@@ -22,7 +22,7 @@ export default () => {
         </div>
         <div className="col-6">
           <div className="rules">
-            <div class=" neumorphism">
+            <div className=" neumorphism">
               <h4>RULES</h4>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae,
               iusto et. Omnis quam enim vitae, esse dolores hic reiciendis nobis
