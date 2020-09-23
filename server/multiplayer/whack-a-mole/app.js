@@ -63,10 +63,12 @@ io.on('connection', (socket) => {
     socket.emit('req_id', socket.id);
 
     socket.on('hit', ({ id, holes }) => {
-        players[id].score = players[id].score + 1;
-        game_state.holes = holes;
-        io.emit('game_update', game_state);
-        io.emit('score_update', players); // <<< Realtime Update
+        if (players[id]) {
+            players[id].score = players[id].score + 1;
+            game_state.holes = holes;
+            io.emit('game_update', game_state);
+            io.emit('score_update', players); // <<< Realtime Update
+        }
     });
     if (game_start) {
         io.emit('game_start');
@@ -94,7 +96,7 @@ io.on('connection', (socket) => {
         game_state = reset_game_state();
     });
 
-    socket.on('disconnect', () => {
+    socket.on('end-session', () => {
         delete players[socket.id];
         game_start = false;
         if (get_object_length(players) === 0) {

@@ -73,8 +73,9 @@ export default ({ location }) => {
         const config_game = WhackConf(socket);
         setGame(Object.assign({}, config_game));
         return () => {
+            socket.emit('end-session');
             setInitialize(false);
-            socket.emit('disconnect');
+            console.log('pindah', socket.emit);
         };
         // eslint-disable-next-line
     }, []);
