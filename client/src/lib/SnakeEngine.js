@@ -149,7 +149,7 @@ const foodGeneration = (foods = [], ctx) => {
   }, 2500)
 }
 
-export let score = 0
+let score = 0
 
 const findFoodCollision = (foods, snake, ctx) => {
   for (const food of foods) {
