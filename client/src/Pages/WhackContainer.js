@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonPhaser } from '@ion-phaser/react';
 import io from 'socket.io-client';
 import WhackConf from './Whack-A-Mole';
-import WaitingRoom from './WaitingRoom';
+import WaitingRoom from '../pages/WaitingRoom';
 import swal from 'sweetalert2';
 import { useHistory } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
@@ -23,7 +23,7 @@ export default ({ location }) => {
     });
 
     useEffect(() => {
-        const socket = io('http://localhost:3000');
+        const socket = io('http://18.141.219.182:3000');
 
         if (location.data) {
             const { username, mode } = location.data;
