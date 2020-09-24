@@ -1,11 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import SnakeEngine, { startGame } from '../lib/SnakeEngine';
-import { useHistory } from 'react-router-dom'
+import { useQuery } from '@apollo/client';
+import React, { useState, useEffect, useRef } from 'react';
+import SnakeEngine, {startGame} from '../lib/SnakeEngine';
 
 export default ({ location }) => {
-    const history = useHistory()
+    // const {loading, error, data} = useQuery()
     const gameCanvas = useRef()
-    let toRoute = ''
 
     useEffect(() => {
         // diff => location.data.diff // isinya antara 'easy', 'med', 'hard
@@ -21,19 +20,18 @@ export default ({ location }) => {
                 foods: [],
             }
             startGame(game, ctx, username)
-            // toRoute = route
         }
     }, [])
 
-    useEffect(() => {
-        // history.push('/snake/leaderboard')
-        console.log(toRoute, '<<<<<<<')
-    }, [toRoute])
-    
+    // if (loading) return (<>loading..</>)
+    // if (error) return (<>Error</>)
+
     return (
         <>
             <div className="wrapper">
-                <p id="score" className="mt-5 mb-5">Score: 0</p>
+                <p></p>
+                <p id="score">Score: 0</p>
+                <img src="snake.jpg" style={{display:'none'}} id="snake-img"></img>
                 <canvas ref={gameCanvas} id="map" width="600" height="600"></canvas>
             </div>
         </>

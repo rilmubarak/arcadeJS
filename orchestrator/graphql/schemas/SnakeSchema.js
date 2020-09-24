@@ -1,58 +1,72 @@
 const axios = require("axios")
 const { gql } = require("apollo-server");
-// const Redis = require('ioredis')
-// const redis = new Redis()
+const redis = require('../config/redis');
+
+const url = 'http://18.141.219.182:3001/snake';
 
 const typeDefs = gql`
-  
-  type Leaderboard {
-    _id: ID,
+  type snake_leaderboard {
+    _id: ID
     username: String
-    score: Float
+    score: Int
+  }
+  
+  type response_snake {
+    message: String!
   }
 
-  input InputLeaderBoard {
+  input input_snake_leaderboard {
     username: String
-    score: Float,
+    score: Int
   }
 
   extend type Query {
-    getLeaderboard: [Leaderboard],
-    
+    get_snake_leaderboard: [snake_leaderboard]
+    clear_snake_cache: response_snake
   }
 
   extend type Mutation {
-      postLeaderboard(newLeaderboard: InputLeaderboard): Leaderboard,
-      delLeaderboard(_id: ID): Leaderboard,
+    post_snake_leaderboard(new_leaderboard: input_snake_leaderboard!): snake_leaderboard
   }
-
 `;
-const url = '' //http://localhost:3001/snake
+
 const resolvers = {
-    Query: {
-        getLeaderboard: async () => {
-          //redis? 
-            const {data} = await axios.get(`${url}/leaderboard`)
-            return data
-          
-            
+  Query: {
+    get_snake_leaderboard: async () => {
+      try {
+        const leaderboard = await redis.get('snake');
+        if (leaderboard) {
+          return JSON.parse(leaderboard);
+        } else {
+          const { data } = await axios.get(`${url}/leaderboard`)
+          redis.set('snake', JSON.stringify(data));
+          return data
         }
+      } catch (error) {
+        console.log(error);
+      }
     },
-    Mutation: {
-        postLeaderboard: async (parents,args, context, info) => {
-            const {newLeaderboard} = args
-            const {data} = await axios.post(`${url}/leaderboard`, newLeaderboard)  
-            //delete cache if used 
-            return data        
-        },
-//------------------------------------------------------------------------------
-        // delMovie: async (parents,args, context, info) => {
-        //     const {_id} = args
-        //     const {data} = await axios.delete(`${url}/leaderboard/${_id}`)
-        //     return data
-        // }
+    clear_snake_cache: async () => {
+      try {
+        await redis.del('snake');
+        return { message: 'OK' };
+      } catch (error) {
+        console.log(error);
+      }
     }
-}
+  },
+  Mutation: {
+    post_snake_leaderboard: async (_, args) => {
+      try {
+        const { new_leaderboard } = args;
+        const { data } = await axios.post(`${url}/leaderboard`, new_leaderboard);
+        redis.del('snake');
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+};
 
-
-module.exports = {typeDefs, resolvers}
+module.exports = { typeDefs, resolvers }

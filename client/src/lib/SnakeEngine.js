@@ -1,6 +1,4 @@
 import swal from 'sweetalert2'
-import React from 'react'
-
 const degToRad = (angle) => ((angle * Math.PI) / 180)
 
 class Snake {
@@ -15,7 +13,9 @@ class Snake {
 
   draw() {
     this.ctx.beginPath()
-    this.ctx.fillStyle = Snake.COLOR
+    let snakeImg = document.getElementById("snake-img")
+    let pattern = this.ctx.createPattern(snakeImg, 'repeat')
+    this.ctx.fillStyle = pattern
     this.ctx.arc(this.x, this.y, Snake.HEAD_RADIUS, 0, 2 * Math.PI)
     this.ctx.fill()
     this.ctx.closePath()
@@ -149,7 +149,7 @@ const foodGeneration = (foods = [], ctx) => {
   }, 2500)
 }
 
-let score = 0
+export let score = 0
 
 const findFoodCollision = (foods, snake, ctx) => {
   for (const food of foods) {
@@ -165,11 +165,30 @@ const findFoodCollision = (foods, snake, ctx) => {
     }
   }
 }
-
+let eatSound = ''
+let defeatSound = ''
 
 const changeScore = (score) => {
   const scoreElem = document.getElementById('score')
   scoreElem.innerHTML = `Score: ${score}`
+  console.log('makan')
+  eatSound.play()
+}
+
+function sound(src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    console.log('play music')
+    // this.sound.play();
+  }
+  this.stop = function(){
+    this.sound.pause();
+  }
 }
 
 let player = ''
@@ -178,6 +197,8 @@ export const startGame = (game, ctx, username) => {
   const { snake, foods } = game
   foodGeneration(foods, ctx)
   player = username
+  eatSound = new Audio(require('../assets/eatSound.mp3'))
+  defeatSound = new Audio(require('../assets/defeat.mp3'))
 
   const canvasSize = {mapW: 600, mapH: 590}
   game.snakeInterval = setInterval(snake.running.bind(snake), 30, canvasSize, game)
@@ -186,31 +207,21 @@ export const startGame = (game, ctx, username) => {
   window.addEventListener('keydown', snake.directionControl.bind(snake))
 }
 
-export let route = 'Home'
-
-export const finishGame = (game) => {
-  // if(game.finished) return
+const finishGame = (game) => {
+  if(game.finished) return
+  console.log('matiii')
   const { snake, snakeInterval, foodInterval } = game
   clearInterval(snakeInterval)
   clearInterval(foodInterval)
   game.finished = true
+  defeatSound.play()
   swal.fire({
     title: `Congratulations, ${player}!`,
     text: `Your final score: ${score}`,
-    // showDenyButton: true,
-    // denyButtonText: 'Home',
-    // confirmButtonText: 'Leaderboard'
-  })
-  // .then(result => {
-  //   if (result.isConfirmed) {
-  //     route = 'leaderboard'
-  //     // return toRoute = 'Home'
-  //     // console.log('ke leaderboard')
-  //   } else if (result.isDenied) {
-  //     return 'home'
-  //     // console.log('ke home')
-  //   }
-  // })
+    showDenyButton: true,
+    denyButtonText: 'Home',
+    confirmButtonText: 'Leaderboard'
+  });
 }
 
 export default Snake
