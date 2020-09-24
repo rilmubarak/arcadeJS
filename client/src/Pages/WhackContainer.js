@@ -80,6 +80,7 @@ export default ({ location }) => {
         setGame(Object.assign({}, config_game));
         return () => {
             socket.emit('end-session');
+            window.location.reload(true);
         };
         // eslint-disable-next-line
     }, []);
