@@ -23,7 +23,7 @@ export default ({ location }) => {
     });
 
     useEffect(() => {
-        const socket = io('http://localhost:3000');
+        const socket = io('http://18.141.219.182:3000');
 
         if (location.data) {
             const { username, mode } = location.data;
