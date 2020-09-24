@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import swal from 'sweetalert2'
 import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -10,36 +10,49 @@ export default ({ location }) => {
     // const {loading, error, data} = useQuery()
     const gameCanvas = useRef()
     const history = useHistory()
-    const [score, setScore] = useState()
+    const [score, setScore] = useState(-1)
     const [add_score] = useMutation(POST_SNAKE, {
         refetchQueries: [{ query: FETCH_SNAKE }]
     });
+    let username = location.data.username
 
     setInterval(() => {
         const isFinish = getFinish()
-        console.log(getFinish());
         if (isFinish && x === false) {
+            x = true
             // history.push('/leaderboard')
             swal.fire({
                 title: `Congratulations, ${username}!`,
                 text: `Your final score: ${getScore()}`,
-                showDenyButton: true,
-                denyButtonText: 'Home',
-                confirmButtonText: 'Leaderboard'
-              });
-            x = true
+            });
+            function send_score() {
+                add_score({
+                    variables: {
+                        username,
+                        score: getScore()
+                    }
+                });
+                history.push({ pathname: '/games' });    
+            }
+            send_score();
         }
     }, 1000)
+
+    useEffect( () => {
+        console.log(score, 'ia<<');
+        if (score !== -1) {
+            
+        } 
+    }, [score])
 
     // useEffect(() => {
     //     console.log('>>', isFinish);
     // }, [isFinish])
-    let username = location.data.username
     
     useEffect(() => {
         return () => {
             // console.log('inidoa>>>>>,', getScore() );
-            setScore(getScore())
+            // setScore(getScore())
             console.log('in>>', getScore(), username);
         }
     }, [])
