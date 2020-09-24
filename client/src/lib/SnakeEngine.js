@@ -165,10 +165,30 @@ const findFoodCollision = (foods, snake, ctx) => {
     }
   }
 }
+let eatSound = ''
+let defeatSound = ''
 
 const changeScore = (score) => {
   const scoreElem = document.getElementById('score')
   scoreElem.innerHTML = `Score: ${score}`
+  console.log('makan')
+  eatSound.play()
+}
+
+function sound(src) {
+  this.sound = document.createElement("audio");
+  this.sound.src = src;
+  this.sound.setAttribute("preload", "auto");
+  this.sound.setAttribute("controls", "none");
+  this.sound.style.display = "none";
+  document.body.appendChild(this.sound);
+  this.play = function(){
+    console.log('play music')
+    // this.sound.play();
+  }
+  this.stop = function(){
+    this.sound.pause();
+  }
 }
 
 let player = ''
@@ -177,6 +197,8 @@ export const startGame = (game, ctx, username) => {
   const { snake, foods } = game
   foodGeneration(foods, ctx)
   player = username
+  eatSound = new Audio(require('../assets/eatSound.mp3'))
+  defeatSound = new Audio(require('../assets/defeat.mp3'))
 
   const canvasSize = {mapW: 600, mapH: 590}
   game.snakeInterval = setInterval(snake.running.bind(snake), 30, canvasSize, game)
@@ -187,10 +209,12 @@ export const startGame = (game, ctx, username) => {
 
 const finishGame = (game) => {
   if(game.finished) return
+  console.log('matiii')
   const { snake, snakeInterval, foodInterval } = game
   clearInterval(snakeInterval)
   clearInterval(foodInterval)
   game.finished = true
+  defeatSound.play()
   swal.fire({
     title: `Congratulations, ${player}!`,
     text: `Your final score: ${score}`,
