@@ -24,10 +24,9 @@ export default () => {
           <div className="rules">
             <div className=" neumorphism">
               <h4>RULES</h4>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae,
-              iusto et. Omnis quam enim vitae, esse dolores hic reiciendis nobis
-              eligendi commodi eaque sed maxime non dolorum incidunt laudantium
-              facilis!
+              - hit the mouse with your hammer.  <br/>
+              - the target will appear randomly  <br/>
+              - simply move and click the mouse over the target you want to hit
             </div>
           </div>
         </div>

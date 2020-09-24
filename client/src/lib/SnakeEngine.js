@@ -151,6 +151,10 @@ const foodGeneration = (foods = [], ctx) => {
 
 let score = 0
 
+export const getScore = () => {
+  return score
+}
+
 const findFoodCollision = (foods, snake, ctx) => {
   for (const food of foods) {
     if (
@@ -207,21 +211,22 @@ export const startGame = (game, ctx, username) => {
   window.addEventListener('keydown', snake.directionControl.bind(snake))
 }
 
+let isFinish = false
+
+export const getFinish = () => {
+  return isFinish
+}
+
 const finishGame = (game) => {
   if(game.finished) return
   console.log('matiii')
   const { snake, snakeInterval, foodInterval } = game
   clearInterval(snakeInterval)
   clearInterval(foodInterval)
+  isFinish = true
   game.finished = true
+  window.history.back()
   defeatSound.play()
-  swal.fire({
-    title: `Congratulations, ${player}!`,
-    text: `Your final score: ${score}`,
-    showDenyButton: true,
-    denyButtonText: 'Home',
-    confirmButtonText: 'Leaderboard'
-  });
 }
 
 export default Snake
