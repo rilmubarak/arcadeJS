@@ -225,7 +225,7 @@ const finishGame = (game) => {
   clearInterval(foodInterval)
   isFinish = true
   game.finished = true
-  window.history.back()
+  // window.history.back()
   defeatSound.play()
 }
 
