@@ -4,7 +4,7 @@
   "description": "database leaderboard whack-a-mole",
   "main": "index.js",
   "scripts": {
-    "test": "jest --detectOpenHandles --forceExit --runInBand --watchAll"
+    "test": "jest --detectOpenHandles --forceExit --runInBand --watchAll --coverage"
   },
   "keywords": [],
   "author": "ArcadeJS",
