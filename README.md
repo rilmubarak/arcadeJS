@@ -76,6 +76,48 @@ Response (201 - CREATED):
 }
 ```
 
+# Whack a Mole LeaderBoard Endpoints
+
+## GET /whack/
+Request body:
+​
+```json
+none
+```
+​
+Response (200 - OK):
+​
+```json
+[
+  {
+    "_id": "7l83540b1568619ecdc70cr",
+    "username": "Baril",
+    "score": 27
+  },
+  {...}
+]
+```
+​
+## POST /whack/
+Request body:
+​
+```json
+{
+  "username": "Baril",
+  "score": 27
+}
+```
+​
+Response (201 - CREATED):
+​
+```json
+{
+  "_id": "7l83540b1568619ecdc70cr",
+  "username": "Baril",
+  "score": 27
+}
+```
+
 ### This error appears when data input is not matched with database
 
 Response (400 - Bad Request)
